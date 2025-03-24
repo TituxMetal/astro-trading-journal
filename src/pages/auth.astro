@@ -1,0 +1,19 @@
+---
+import AuthForm from '~/components/AuthForm.astro'
+import Layout from '~/layouts/Layout.astro'
+
+// Get the mode parameter from the URL, default to login if not specified
+const mode = Astro.url.searchParams.get('mode')
+const authMode = mode === 'signup' ? 'signup' : 'login'
+
+// Set the title and heading based on the mode
+const title = authMode === 'login' ? 'Login' : 'Sign Up'
+const heading = authMode === 'login' ? 'Login to your account' : 'Create your account'
+---
+
+<Layout title={title}>
+  <main class='container mx-auto px-4 py-8'>
+    <h1 class='mb-8 text-center text-4xl font-bold text-zinc-100'>{heading}</h1>
+    <AuthForm mode={authMode} />
+  </main>
+</Layout>
