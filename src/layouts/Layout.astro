@@ -1,8 +1,13 @@
 ---
 import { Icon } from 'astro-icon/components'
+import { prisma } from '~/lib/prisma'
 import '~/styles/globals.css'
 
 const { title } = Astro.props
+const { session } = Astro.locals
+const id = session?.userId ?? ''
+
+const user = await prisma.user.findUnique({ where: { id }, include: { authMethods: true } })
 ---
 
 <!doctype html>
@@ -23,45 +28,56 @@ const { title } = Astro.props
           <li>
             <a href='/'>Home</a>
           </li>
-          <li>
-            <a href='/about'>About</a>
-          </li>
+          {
+            session && user ? (
+              <>
+                <li>{user.username}</li>
+                <li>
+                  <a href='/api/auth/logout'>Logout</a>
+                </li>
+              </>
+            ) : (
+              <li>
+                <a href='/auth'>Login</a>
+              </li>
+            )
+          }
         </ul>
       </nav>
     </header>
-    <main class='mx-auto flex w-full max-w-screen-xl flex-1 flex-col py-6'>
-      <slot />
-    </main>
-    <footer
-      class='flex flex-col items-center justify-center gap-2 bg-indigo-700/80 p-6 text-amber-200'
-    >
-      <p class='flex items-center justify-center gap-1 font-semibold'>
-        <Icon
-          name='copy-left'
-          aria-label='copy left icon'
-          title='copy left'
-          class='inline size-4 text-amber-200'
-        />
-        {new Date().getFullYear()} Astro Trading Journal.
-      </p>
-      <p>
-        Built by <a
-          class='font-semibold text-amber-300 hover:text-amber-200 hover:underline'
-          href='https://github.com/TituxMetal'
-          target='_blank'
-          rel='noopener noreferrer'>Lgdweb</a
-        > with <Icon
-          name='heart'
-          aria-label='heart icon'
-          title='love'
-          class='inline size-6 text-red-600/80'
-        /> and lots of <Icon
-          name='coffee'
-          title='coffee'
-          aria-label='coffee icon'
-          class='inline size-6 text-amber-600/80'
-        />.
-      </p>
-    </footer>
   </body>
+  <main class='mx-auto flex w-full max-w-screen-xl flex-1 flex-col py-6'>
+    <slot />
+  </main>
+  <footer
+    class='flex flex-col items-center justify-center gap-2 bg-indigo-700/80 p-6 text-amber-200'
+  >
+    <p class='flex items-center justify-center gap-1 font-semibold'>
+      <Icon
+        name='copy-left'
+        aria-label='copy left icon'
+        title='copy left'
+        class='inline size-4 text-amber-200'
+      />
+      {new Date().getFullYear()} Astro Trading Journal.
+    </p>
+    <p>
+      Built by <a
+        class='font-semibold text-amber-300 hover:text-amber-200 hover:underline'
+        href='https://github.com/TituxMetal'
+        target='_blank'
+        rel='noopener noreferrer'>Lgdweb</a
+      > with <Icon
+        name='heart'
+        aria-label='heart icon'
+        title='love'
+        class='inline size-6 text-red-600/80'
+      /> and lots of <Icon
+        name='coffee'
+        title='coffee'
+        aria-label='coffee icon'
+        class='inline size-6 text-amber-600/80'
+      />.
+    </p>
+  </footer>
 </html>
