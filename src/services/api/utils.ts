@@ -1,48 +1,18 @@
-import type { AuthSchema } from '~/schemas/auth.schema'
-import type { AuthMode } from '~/types/auth.types'
-
+/**
+ * General API response type
+ */
 export type ApiResponse<T = unknown> = {
   success: boolean
   message?: string
   data?: T
 }
 
-export const authenticateUser = async (
-  data: AuthSchema,
-  mode: AuthMode
-): Promise<ApiResponse<{ id: string; username: string }>> => {
-  try {
-    const response = await fetch(`/api/auth/${mode}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-
-    const result = await response.json()
-
-    if (!response.ok) {
-      return {
-        success: false,
-        message: result.message || 'Authentication failed'
-      }
-    }
-
-    return {
-      success: true,
-      data: result
-    }
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
-
-    return {
-      success: false,
-      message: errorMessage
-    }
-  }
-}
-
+/**
+ * Creates a successful API response
+ * @param data - The data to include in the response
+ * @param status - The HTTP status code (default: 200)
+ * @returns A Response object with the data
+ */
 export const createApiResponse = <T>(data: T, status = 200) => {
   return new Response(
     JSON.stringify({
@@ -58,6 +28,13 @@ export const createApiResponse = <T>(data: T, status = 200) => {
   )
 }
 
+/**
+ * Creates an API error response
+ * @param message - The error message
+ * @param status - The HTTP status code
+ * @param errors - Optional additional error details
+ * @returns A Response object with the error
+ */
 export const createApiError = (message: string, status = 400, errors?: unknown) => {
   const responseBody: Record<string, unknown> = {
     success: false,
