@@ -43,3 +43,14 @@ model Session {
 
   @@index([userId])
 }
+
+model Broker {
+  id String @id @default(uuid())
+
+  name          String
+  accountNumber String?
+  currency      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
