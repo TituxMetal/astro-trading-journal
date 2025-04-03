@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import type { AuthSchema } from '~/schemas/auth.schema'
-import type { ApiResponse } from '~/services/api.service'
+import type { ApiResponse } from '~/services/api/utils'
 import { AuthForm } from './AuthForm'
 
 describe('AuthForm', () => {

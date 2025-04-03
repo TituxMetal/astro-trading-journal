@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { AuthSchema } from '~/schemas/auth.schema'
-import type { ApiResponse } from '~/services/api.service'
+import type { ApiResponse } from '~/services/api/utils'
 import { useAuthForm } from './useAuthForm'
 
 describe('useAuthForm', () => {

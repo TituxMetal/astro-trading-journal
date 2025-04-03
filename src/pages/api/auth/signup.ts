@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 import { lucia } from '~/lib/lucia'
 import { authSchema } from '~/schemas/auth.schema'
-import { apiErrors } from '~/services/api.service'
+import { apiErrors } from '~/services/api/utils'
 import { createNewUser } from '~/services/auth.service'
 
 export const POST: APIRoute = async ({ request, cookies }) => {
