@@ -1,5 +1,5 @@
 import { useAuthForm } from '~/hooks/useAuthForm'
-import { authenticateUser } from '~/services/api.service'
+import { authenticateUser } from '~/services/api/auth'
 import type { AuthMode } from '~/types/auth.types'
 import { routes } from '~/utils/routes'
 import { Button } from './ui/Button'

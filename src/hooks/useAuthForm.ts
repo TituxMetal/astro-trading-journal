@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { authSchema, type AuthSchema } from '~/schemas/auth.schema'
-import type { ApiResponse } from '~/services/api.service'
+import type { ApiResponse } from '~/services/api/utils'
 import type { AuthMode } from '~/types/auth.types'
 
 export type AuthenticateFunction = (
