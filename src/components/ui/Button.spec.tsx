@@ -17,19 +17,25 @@ describe('Button', () => {
     setup()
     const button = screen.getByRole('button', { name: /click me/i })
     expect(button).toBeInTheDocument()
-    expect(button).toHaveClass('bg-sky-400')
+    expect(button).toHaveClass('bg-sky-400', 'text-zinc-900')
   })
 
   it('renders with outline variant', () => {
     setup({ variant: 'outline' })
     const button = screen.getByRole('button', { name: /click me/i })
-    expect(button).toHaveClass('border-zinc-700')
+    expect(button).toHaveClass('bg-transparent', 'border-zinc-700', 'text-zinc-300')
   })
 
   it('renders with ghost variant', () => {
     setup({ variant: 'ghost' })
     const button = screen.getByRole('button', { name: /click me/i })
-    expect(button).toHaveClass('bg-transparent')
+    expect(button).toHaveClass('bg-transparent', 'text-zinc-300')
+  })
+
+  it('renders with destructive variant', () => {
+    setup({ variant: 'destructive' })
+    const button = screen.getByRole('button', { name: /click me/i })
+    expect(button).toHaveClass('bg-red-900', 'text-red-300')
   })
 
   it('applies disabled styles when disabled', () => {
@@ -67,5 +73,18 @@ describe('Button', () => {
     await user.click(screen.getByRole('button', { name: /click me/i }))
 
     expect(onClick).not.toHaveBeenCalled()
+  })
+
+  it('can render as an anchor', () => {
+    render(
+      <Button as='a' href='/test'>
+        Link
+      </Button>
+    )
+
+    const link = screen.getByRole('link', { name: 'Link' })
+
+    expect(link).toHaveAttribute('href', '/test')
+    expect(link).toHaveClass('bg-sky-400', 'text-zinc-900')
   })
 })
