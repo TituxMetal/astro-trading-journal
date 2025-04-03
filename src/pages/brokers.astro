@@ -1,0 +1,28 @@
+---
+import { BrokerList } from '~/components/BrokerList'
+import Layout from '~/layouts/Layout.astro'
+
+const session = Astro.cookies.get('lucia-astro-trading-journal-session')
+const isLoggedIn = !!session?.value
+---
+
+<Layout title='Brokers'>
+  <main class='container mx-auto px-4 py-8'>
+    <div class='mb-8 flex items-center justify-between'>
+      <h1 class='text-3xl font-bold'>Brokers</h1>
+
+      {
+        isLoggedIn && (
+          <a
+            href='/brokers/new'
+            class='w-fit rounded-lg border-2 border-transparent bg-sky-400 px-4 py-2 font-medium text-zinc-900 transition-colors hover:bg-sky-400/85 focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:outline-none disabled:opacity-70'
+          >
+            + Add Broker
+          </a>
+        )
+      }
+    </div>
+
+    <BrokerList client:load />
+  </main>
+</Layout>
