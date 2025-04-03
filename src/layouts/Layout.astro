@@ -28,6 +28,9 @@ const user = await prisma.user.findUnique({ where: { id }, include: { authMethod
           <li>
             <a href='/'>Home</a>
           </li>
+          <li>
+            <a href='/brokers'>Brokers</a>
+          </li>
           {
             session && user ? (
               <>
