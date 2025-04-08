@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { apiErrors, createApiError, createApiResponse } from './utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { apiErrors, apiRequest, createApiError, createApiResponse } from './utils'
 
 describe('createApiResponse', () => {
   it('creates a successful response with data', async () => {
@@ -111,6 +111,7 @@ describe('apiErrors', () => {
 
   it('creates server error with custom message', async () => {
     const errorMessage = 'Database connection failed'
+
     const response = apiErrors.serverError(errorMessage)
     const body = await response.json()
 
@@ -134,6 +135,7 @@ describe('apiErrors', () => {
 
   it('creates bad request error with custom message', async () => {
     const errorMessage = 'Invalid input data'
+
     const response = apiErrors.badRequest(errorMessage)
     const body = await response.json()
 
@@ -142,5 +144,66 @@ describe('apiErrors', () => {
       success: false,
       message: errorMessage
     })
+  })
+})
+
+describe('apiRequest', () => {
+  const originalFetch = global.fetch
+
+  beforeEach(() => {
+    global.fetch = vi.fn()
+  })
+
+  afterEach(() => {
+    global.fetch = originalFetch
+  })
+
+  it('returns a success response with nested data when response.ok is true', async () => {
+    const mockData = { data: { id: 1, name: 'Test' } }
+    const fetchMock = global.fetch as any
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockData)
+    })
+
+    const result = await apiRequest<{ id: number; name: string }>('/test')
+
+    expect(result).toEqual({ success: true, data: mockData.data })
+  })
+
+  it('returns a success response with result when no nested data is provided', async () => {
+    const mockData = { id: 1, name: 'Test' }
+    const fetchMock = global.fetch as any
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockData)
+    })
+
+    const result = await apiRequest<{ id: number; name: string }>('/test')
+
+    expect(result).toEqual({ success: true, data: mockData })
+  })
+
+  it('returns an error response when response.ok is false', async () => {
+    const errorMessage = 'Error occurred'
+    const fetchMock = global.fetch as any
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      json: () => Promise.resolve({ message: errorMessage })
+    })
+
+    const result = await apiRequest<any>('/test', {}, 'Default error message')
+
+    expect(result).toEqual({ success: false, message: errorMessage })
+  })
+
+  it('returns an error response on fetch error', async () => {
+    const networkError = new Error('Network failure')
+    const fetchMock = global.fetch as any
+    fetchMock.mockRejectedValueOnce(networkError)
+
+    const result = await apiRequest<any>('/test')
+
+    expect(result).toEqual({ success: false, message: 'Network failure' })
   })
 })
