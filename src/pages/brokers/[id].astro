@@ -1,0 +1,56 @@
+---
+import { Icon } from 'astro-icon/components'
+import { BrokerForm } from '~/components/BrokerForm'
+import Layout from '~/layouts/Layout.astro'
+import { getBrokerById } from '~/services/broker.service'
+
+const { session } = Astro.locals
+
+if (!session?.userId) {
+  console.error('No user ID found in session')
+
+  return Astro.redirect('/auth?redirect=/brokers')
+}
+
+const { id } = Astro.params
+
+if (!id) {
+  console.error('No broker ID provided')
+
+  return Astro.redirect('/brokers')
+}
+
+const broker = await getBrokerById(id)
+
+if (!broker) {
+  console.error('Failed to get broker')
+
+  return Astro.redirect('/brokers')
+}
+---
+
+<Layout title={`Edit Broker - ${broker.name}`}>
+  <main class='container mx-auto px-4 py-8'>
+    <nav class='flex gap-2' role='toolbar'>
+      <a href='/brokers' class='mr-4 inline-flex items-center text-zinc-300 hover:text-zinc-200'>
+        <Icon name='back' class='mr-2 inline size-6' />
+        Back
+      </a>
+    </nav>
+
+    <section class='mx-auto max-w-2xl rounded-lg border border-zinc-800 bg-zinc-900/50 p-6'>
+      <h1 class='mb-4 text-center text-3xl font-bold'>Edit Broker: {broker.name}</h1>
+
+      <BrokerForm
+        client:load
+        mode='edit'
+        brokerId={broker.id}
+        defaultValues={{
+          name: broker.name,
+          accountNumber: broker.accountNumber || '',
+          currency: broker.currency
+        }}
+      />
+    </section>
+  </main>
+</Layout>
