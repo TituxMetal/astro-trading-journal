@@ -22,7 +22,7 @@ export const BrokerItem = ({ broker, onDelete }: BrokerItemProps) => {
         <p className='text-zinc-300'>Currency: {broker.currency}</p>
 
         <nav className='mt-2 flex gap-2' role='toolbar'>
-          <Button as='a' href={`/brokers/${broker.id}/edit`} variant='outline'>
+          <Button as='a' href={`/brokers/${broker.id}`} variant='outline'>
             Edit
           </Button>
           <Button onClick={handleDelete} variant='destructive'>
