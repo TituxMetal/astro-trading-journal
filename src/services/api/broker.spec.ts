@@ -3,6 +3,7 @@ import { createBroker } from './broker'
 
 const mockFetch = vi.fn()
 global.fetch = mockFetch
+
 beforeEach(() => {
   mockFetch.mockReset()
 })
@@ -31,9 +32,7 @@ describe('createBroker', () => {
 
     expect(mockFetch).toHaveBeenCalledWith('/api/brokers', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(mockBrokerData)
     })
     expect(result).toEqual({
