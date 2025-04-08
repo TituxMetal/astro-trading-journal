@@ -34,7 +34,9 @@ describe('useBrokerForm', () => {
     )
 
     expect(result.current.serverError).toBeNull()
+
     expect(result.current.form).toBeDefined()
+
     expect(result.current.isError).toBe(false)
   })
 
@@ -43,7 +45,7 @@ describe('useBrokerForm', () => {
 
     await act(async () => {
       result.current.form.setValue('name', mockBrokerData.name)
-      result.current.form.setValue('accountNumber', mockBrokerData.accountNumber || '')
+      result.current.form.setValue('accountNumber', mockBrokerData.accountNumber)
       result.current.form.setValue('currency', mockBrokerData.currency)
     })
 
@@ -52,6 +54,7 @@ describe('useBrokerForm', () => {
     })
 
     expect(mockSubmitSuccess).toHaveBeenCalledWith(mockBrokerData)
+
     expect(result.current.serverError).toBeNull()
   })
 
@@ -60,7 +63,7 @@ describe('useBrokerForm', () => {
 
     await act(async () => {
       result.current.form.setValue('name', mockBrokerData.name)
-      result.current.form.setValue('accountNumber', mockBrokerData.accountNumber || '')
+      result.current.form.setValue('accountNumber', mockBrokerData.accountNumber)
       result.current.form.setValue('currency', mockBrokerData.currency)
     })
 
@@ -69,6 +72,7 @@ describe('useBrokerForm', () => {
     })
 
     expect(mockSubmitError).toHaveBeenCalledWith(mockBrokerData)
+
     expect(result.current.serverError).toBe('Failed to save broker')
   })
 
@@ -82,18 +86,20 @@ describe('useBrokerForm', () => {
 
     await act(async () => {
       result.current.form.setValue('name', mockBrokerData.name)
-      result.current.form.setValue('accountNumber', mockBrokerData.accountNumber || '')
+      result.current.form.setValue('accountNumber', mockBrokerData.accountNumber)
       result.current.form.setValue('currency', mockBrokerData.currency)
     })
 
     await act(async () => {
       await result.current.handleSubmit()
     })
+
     expect(result.current.serverError).toBe('Failed to save broker')
 
     await act(async () => {
       await result.current.handleSubmit()
     })
+
     expect(result.current.serverError).toBeNull()
   })
 
@@ -104,7 +110,6 @@ describe('useBrokerForm', () => {
       await result.current.form.handleSubmit(() => {})()
     })
 
-    // name and currency are required fields
     expect(Object.keys(result.current.form.formState.errors)).toHaveLength(2)
     expect(result.current.isError).toBe(true)
   })
