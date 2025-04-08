@@ -1,16 +1,31 @@
 import { useBrokerForm } from '~/hooks/useBrokerForm'
 import { type CreateBrokerSchema } from '~/schemas/broker.schema'
-import { createBroker } from '~/services/api/broker'
+import { createBroker, updateBroker } from '~/services/api/broker'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 
 interface BrokerFormProps {
   defaultValues?: Partial<CreateBrokerSchema>
-  onSubmit?: typeof createBroker
+  mode?: 'create' | 'edit'
+  brokerId?: string
 }
 
-export const BrokerForm = ({ defaultValues, onSubmit = createBroker }: BrokerFormProps) => {
-  const { form, serverError, handleSubmit, isError } = useBrokerForm(defaultValues ?? {}, onSubmit)
+export const BrokerForm = ({ defaultValues, mode = 'create', brokerId }: BrokerFormProps) => {
+  const submitHandler = (data: CreateBrokerSchema) => {
+    if (mode === 'edit') {
+      if (!brokerId) {
+        throw new Error('Broker ID is required for edit mode')
+      }
+
+      return updateBroker(brokerId!, data)
+    }
+    return createBroker(data)
+  }
+
+  const { form, serverError, handleSubmit, isError, isSubmitting } = useBrokerForm(
+    defaultValues ?? {},
+    submitHandler
+  )
 
   return (
     <form onSubmit={handleSubmit} className='space-y-6'>
@@ -41,8 +56,8 @@ export const BrokerForm = ({ defaultValues, onSubmit = createBroker }: BrokerFor
         />
       </div>
 
-      <Button type='submit' disabled={isError}>
-        Create Broker
+      <Button type='submit' disabled={isSubmitting || isError}>
+        {isSubmitting ? 'Saving...' : mode === 'create' ? 'Create Broker' : 'Update Broker'}
       </Button>
     </form>
   )
