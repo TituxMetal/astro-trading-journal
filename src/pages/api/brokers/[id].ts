@@ -12,9 +12,11 @@ export const GET: APIRoute = async ({ params }) => {
     }
 
     const broker = await getBrokerById(id)
+
     return createApiResponse(broker)
   } catch (error) {
     console.error('Error retrieving broker:', error)
+
     return apiErrors.serverError()
   }
 }
@@ -54,7 +56,7 @@ export const DELETE: APIRoute = async ({ params }) => {
 
     await deleteBroker(id)
 
-    return createApiResponse(null, 204)
+    return new Response(null, { status: 204 })
   } catch (error) {
     console.error('Error deleting broker:', error)
 
