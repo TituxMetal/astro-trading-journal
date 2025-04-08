@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Broker } from '@prisma/client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { createBrokerSchema, type CreateBrokerSchema } from '~/schemas/broker.schema'
 import type { ApiResponse } from '~/services/api/utils'
@@ -25,6 +25,15 @@ export const useBrokerForm = (
     criteriaMode: 'all'
   })
 
+  useEffect(() => {
+    form.reset({
+      name: '',
+      accountNumber: '',
+      currency: '',
+      ...defaultValues
+    })
+  }, [])
+
   const handleSubmit = async (data: CreateBrokerSchema) => {
     setServerError(null)
 
@@ -47,6 +56,7 @@ export const useBrokerForm = (
     form,
     serverError,
     isError: form.formState.isSubmitted && !form.formState.isValid,
-    handleSubmit: form.handleSubmit(handleSubmit)
+    handleSubmit: form.handleSubmit(handleSubmit),
+    isSubmitting: form.formState.isSubmitting
   }
 }
